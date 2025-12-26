@@ -1,0 +1,87 @@
+﻿@model Inventory.ViewModel.Stocks.StockDetailVM
+
+@{
+    ViewData["Title"] = "Stock Details";
+}
+@await Html.PartialAsync("_Alerts")
+
+<h2>@Model.ProductName Details</h2>
+<hr />
+
+<dl class="row">
+    <dt class="col-sm-3">Product Name</dt>
+    <dd class="col-sm-9">@Model.ProductName</dd>
+</dl>
+
+<h4>Stocks Per Warehouse</h4>
+
+@if (Model.StocksPerWarehouse != null && Model.StocksPerWarehouse.Any())
+{
+    @foreach (var stock in Model.StocksPerWarehouse)
+    {
+        <div class="card mb-3">
+            <div class="card-header">
+                Warehouse: @stock.WarehouseName - Quantity: @stock.Quantity
+                <td>
+                    <!-- زر Edit -->
+                    <a asp-action="Edit"
+                       asp-route-id="@stock.StockId"
+                       class="btn btn-sm btn-warning">
+                        تعديل
+                    </a>
+                </td>
+
+            </div>
+            <div class="card-body">
+                @if (stock.Batches != null && stock.Batches.Any())
+                {
+                    <table class="table table-bordered table-sm">
+                        <thead>
+                            <tr>
+                                <th>Batch Number</th>
+                                <th>Quantity</th>
+                                <th>Expiry Date</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var batch in stock.Batches)
+                            {
+                                <tr>
+                                    <td>@batch.BatchNumber</td>
+                                    <td>@batch.Quantity</td>
+                                    <td>@batch.ExpiryDate.ToString("yyyy-MM-dd")</td>
+                                    <td>
+                                        @if (batch.ExpiryStatus == "Expired")
+                                        {
+                                            <span class="badge bg-danger">Expired</span>
+                                        }
+                                        else if (batch.ExpiryStatus == "NearExpiry")
+                                        {
+                                            <span class="badge bg-warning text-dark">Near Expiry</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success">Valid</span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+                else
+                {
+                    <p class="text-muted">No batches found for this warehouse.</p>
+                }
+            </div>
+        </div>
+    }
+}
+else
+{
+    <p class="text-muted">No stocks found for this product.</p>
+}
+<div class="mt-3">
+    <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+</div>

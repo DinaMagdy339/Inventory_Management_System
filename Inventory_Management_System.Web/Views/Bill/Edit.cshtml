@@ -1,0 +1,93 @@
+﻿@model Inventory.ViewModel.Bills.BillViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@await Html.PartialAsync("_Alerts")
+
+<h1>Edit</h1>
+
+<h4>BillViewModel</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="BillId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <div class="form-group">
+                <label asp-for="BillName" class="control-label"></label>
+                <input asp-for="BillName" class="form-control" />
+                <span asp-validation-for="BillName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VendorDeliveryNumber" class="control-label"></label>
+                <input asp-for="VendorDeliveryNumber" class="form-control" />
+                <span asp-validation-for="VendorDeliveryNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="VendorInvoiceNumber" class="control-label"></label>
+                <input asp-for="VendorInvoiceNumber" class="form-control" />
+                <span asp-validation-for="VendorInvoiceNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BillDate" class="control-label"></label>
+                <input asp-for="BillDate" class="form-control" />
+                <span asp-validation-for="BillDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BillDueDate" class="control-label"></label>
+                <input asp-for="BillDueDate" class="form-control" />
+                <span asp-validation-for="BillDueDate" class="text-danger"></span>
+            </div>
+            <label asp-for="BillTypeName" class="control-label"></label>
+
+            <select asp-for="BillTypeName" class="form-control searchable-select"
+                    asp-items="@(new SelectList(ViewBag.BillTypes, "BillTypeName", "BillTypeName", Model.BillTypeName))">
+            </select>
+            <label asp-for="VendorName" class="control-label"></label>
+
+            <select asp-for="VendorName" class="form-control searchable-select"
+                    asp-items="@(new SelectList(ViewBag.Vendors, "VendorName", "VendorName", Model.VendorName))">
+            </select>
+            <label asp-for="GRNNumber" class="control-label"></label>
+
+            <select asp-for="GRNNumber" class="form-control searchable-select"
+                    asp-items="@(new SelectList(ViewBag.ReceivedNotes, "Name", "Name", Model.GRNNumber))">
+            </select>
+
+            <div class="form-group">
+                <label asp-for="GRNDate" class="control-label"></label>
+                <input asp-for="GRNDate" class="form-control" />
+                <span asp-validation-for="GRNDate" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PaymentStatus" class="control-label"></label>
+                <input asp-for="PaymentStatus" class="form-control" />
+                <span asp-validation-for="PaymentStatus" class="text-danger"></span>
+            </div>
+           
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+@section Scripts {
+    <script>
+        $(document).ready(function () {
+            $('.searchable-select').select2({
+                placeholder: "اكتب للبحث...",
+                allowClear: true,
+                width: '100%'
+            });
+        });
+    </script>
+}
+
+

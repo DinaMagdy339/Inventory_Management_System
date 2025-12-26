@@ -1,0 +1,38 @@
+﻿@model Inventory.ViewModel.Bills.BillTypeViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@await Html.PartialAsync("_Alerts")
+
+<h1>Edit</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post">
+            <input type="hidden" asp-for="BillTypeId" />
+
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="BillTypeName" class="control-label"></label>
+                <input asp-for="BillTypeName" class="form-control" />
+                <span asp-validation-for="BillTypeName" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="Description" class="control-label"></label>
+                <input asp-for="Description" class="form-control" />
+                <span asp-validation-for="Description" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

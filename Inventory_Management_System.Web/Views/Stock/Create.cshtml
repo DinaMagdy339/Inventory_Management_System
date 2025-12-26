@@ -1,0 +1,83 @@
+﻿@model Inventory.ViewModel.Stocks.CreatedStockVM
+
+@{
+    ViewData["Title"] = "إضافة مخزون جديد";
+}
+
+<h2>إضافة مخزون جديد</h2>
+<hr />
+
+<form asp-action="Create" method="post">
+    <!-- المنتج -->
+    <div class="form-group">
+        <label>المنتج</label>
+        <select asp-for="ProductName" class="form-control searchable-select"
+                asp-items="@(new SelectList(ViewBag.product?? new List<string>()))">
+            <option value="">اختر المنتج</option>
+
+        </select>
+    </div>
+
+
+    <!-- المخزن -->
+    <div class="form-group">
+        <label>المخزن</label>
+        <select asp-for="WarehouseName" class="form-control searchable-select"
+                asp-items="@(new SelectList(ViewBag.warehouse?? new List<string>()))">
+            <option value="">اختر المخزن</option>
+
+        </select>
+    </div>
+
+    <!-- الكمية الكلية -->
+    <div class="form-group">
+        <label>إجمالي الكمية</label>
+        <input asp-for="Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <hr />
+    <h4>الباتشات</h4>
+    <button type="button" id="addBatchBtn" class="btn btn-info mb-2">➕ إضافة باتش جديد</button>
+
+    <table class="table table-bordered" id="batchesTable">
+        <thead>
+            <tr>
+                <th>رقم الباتش</th>
+                <th>الكمية</th>
+                <th>تاريخ الانتهاء</th>
+                <th>حذف</th>
+            </tr>
+        </thead>
+        <tbody>
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-success">💾 حفظ المخزون</button>
+    <a asp-action="Index" class="btn btn-secondary">↩ رجوع</a>
+</form>
+
+@section Scripts {
+    <script>
+        let batchIndex = 0;
+
+        document.getElementById("addBatchBtn").addEventListener("click", function() {
+            const table = document.getElementById("batchesTable").getElementsByTagName('tbody')[0];
+            const row = document.createElement("tr");
+
+            row.innerHTML = `
+              <input name="Batches[${batchIndex}].BatchNumber" class="form-control" required />
+              <input name="Batches[${batchIndex}].Quantity" class="form-control" required />
+              <input name="Batches[${batchIndex}].ExpiryDate" type="date" class="form-control" required />
+              <td class="text-center"><button type="button" class="btn btn-danger removeBatchBtn">حذف</button></td>
+            `;
+
+            table.appendChild(row);
+            batchIndex++;
+
+            row.querySelector(".removeBatchBtn").addEventListener("click", function() {
+                row.remove();
+            });
+        });
+    </script>
+}

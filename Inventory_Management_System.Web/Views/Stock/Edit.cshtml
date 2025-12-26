@@ -1,0 +1,100 @@
+﻿@model Inventory.ViewModel.Stocks.CreatedStockVM
+
+@{
+    ViewData["Title"] = "تعديل المخزون";
+}
+
+<h2>تعديل المخزون</h2>
+<hr />
+
+<form asp-action="Edit" method="post">
+    @Html.HiddenFor(m => m.StockId)
+
+    <!-- المنتج -->
+    <div class="form-group">
+        <label>المنتج</label>
+        <select asp-for="ProductName" class="form-control searchable-select"
+                asp-items="@(new SelectList(ViewBag.product?? new List<string>()))">
+            <option value="">اختر المنتج</option>
+
+        </select>
+    </div>
+
+    
+    <!-- المخزن -->  
+    <div class="form-group">
+        <label>المخزن</label>
+        <select asp-for="WarehouseName" class="form-control searchable-select"
+                asp-items="@(new SelectList(ViewBag.warehouse?? new List<string>()))">
+            <option value="">اختر المخزن</option>
+
+        </select>
+    </div>
+
+  
+    <!-- الكمية الكلية -->
+    <div class="form-group">
+        <label>إجمالي الكمية</label>
+        <input asp-for="Quantity" class="form-control" />
+        <span asp-validation-for="Quantity" class="text-danger"></span>
+    </div>
+
+    <hr />
+    <h4>الباتشات</h4>
+
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>رقم الباتش</th>
+                <th>الكمية</th>
+                <th>تاريخ الانتهاء</th>
+                <th>حذف</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tbody>
+                @if (Model != null && Model.Batches != null && Model.Batches.Any())
+                {
+
+                    for (int i = 0; i < Model.Batches.Count; i++)
+                    {
+                        <tr>
+                            @Html.HiddenFor(m => m.Batches[i].StockBatchId)
+
+                    <td>
+                        <input asp-for="Batches[i].BatchNumber" class="form-control" />
+                    </td>
+
+                    <td>
+                        <input asp-for="Batches[i].Quantity" class="form-control" />
+                    </td>
+
+                    <td>
+                        <input asp-for="Batches[i].ExpiryDate"
+                               type="date"
+                               class="form-control" />
+                    </td>
+
+                    <td class="text-center">
+                        <input asp-for="Batches[i].IsDeleted" type="checkbox" />
+                        <label>حذف</label>
+                    </td>
+                </tr>
+                }
+            }
+                else
+                {
+                <tr>
+                    <td colspan="4" class="text-center text-muted">لا يوجد باتشات</td>
+                </tr>
+                }
+        </tbody>
+    </table>
+
+    <button type="submit" class="btn btn-primary">💾 حفظ التعديلات</button>
+    <a asp-action="Index" class="btn btn-secondary">↩ رجوع</a>
+</form>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

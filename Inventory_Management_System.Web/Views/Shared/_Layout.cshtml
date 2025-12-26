@@ -1,0 +1,170 @@
+﻿@using Inventory.Utility
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Inventory Management</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+
+    <!-- FontAwesome -->
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" />
+
+    <style>
+        body {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar {
+            min-height: 100vh;
+            background-color: #212529;
+            color: #fff;
+        }
+
+            .sidebar a,
+            .sidebar button {
+                color: #fff;
+                text-decoration: none;
+            }
+
+                .sidebar a:hover,
+                .sidebar button:hover {
+                    background-color: #343a40;
+                    color: #fff;
+                    border-radius: 5px;
+                }
+
+        .nav-link.active {
+            background-color: #495057;
+            border-radius: 5px;
+        }
+
+        main {
+            padding: 20px;
+            background-color: #f8f9fa;
+            min-height: calc(100vh - 60px);
+        }
+
+        footer {
+            height: 60px;
+            line-height: 60px;
+        }
+
+        .btn-link {
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 sidebar p-3">
+                <h3 class="text-center mb-4">Inventory Management</h3>
+
+                <ul class="nav flex-column">
+
+                    <!-- Home -->
+                    <li class="nav-item mb-1">
+                        <a class="nav-link active"
+                           asp-controller="Home"
+                           asp-action="Index">
+                            <i class="fas fa-home me-2"></i> Home
+                        </a>
+                    </li>
+
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-envelope me-2"></i> Message
+                        </a>
+                    </li>
+
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-cog me-2"></i> Settings
+                        </a>
+                    </li>
+
+                    <li class="nav-item mb-1">
+                        <a class="nav-link" href="#">
+                            <i class="fas fa-user me-2"></i> Profile
+                        </a>
+                    </li>
+
+                    <!-- Dynamic Menu -->
+                    <li class="nav-item">
+                        <ul class="nav flex-column ms-2">
+                            @foreach (var menu in typeof(TopMenu).GetNestedTypes())
+                            {
+                                var pageName = menu.GetField("PageName")?.GetValue(null)?.ToString();
+                                var path = menu.GetField("Path")?.GetValue(null)?.ToString();
+                                var icon = menu.GetField("Icon")?.GetValue(null)?.ToString();
+
+                                if (!string.IsNullOrEmpty(pageName) && !string.IsNullOrEmpty(path))
+                                {
+                                    <li class="nav-item mb-1">
+                                        <a class="nav-link" href="@path">
+                                            @if (!string.IsNullOrEmpty(icon))
+                                            {
+                                                <i class="@icon me-2"></i>
+                                            }
+                                            @pageName
+                                        </a>
+                                    </li>
+                                }
+                            }
+                        </ul>
+                    </li>
+
+                    <!-- Logout -->
+                    @if (User.Identity?.IsAuthenticated == true)
+                    {
+                        <li class="nav-item mb-1 mt-3">
+                            <form asp-controller="Account"
+                                  asp-action="Logout"
+                                  method="post"
+                                  class="nav-link p-0">
+
+                                @Html.AntiForgeryToken()
+
+                                <button type="submit"
+                                        class="btn btn-link nav-link w-100">
+                                    <i class="fas fa-sign-out-alt me-2"></i> Logout
+                                </button>
+                            </form>
+                        </li>
+                    }
+
+                </ul>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9">
+                @RenderBody()
+            </main>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="border-top text-center bg-light">
+        <div class="container">
+            &copy; 2025 - Inventory Management System -
+            <a asp-controller="Home" asp-action="Privacy">Privacy</a>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

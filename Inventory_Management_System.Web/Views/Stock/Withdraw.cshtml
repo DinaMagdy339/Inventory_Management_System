@@ -1,0 +1,118 @@
+﻿@model Inventory.ViewModel.Stocks.WithdrawForInvoiceVM
+
+<h2>سحب المخزون</h2>
+
+@* رسائل النجاح أو الخطأ *@
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success">@TempData["Success"]</div>
+}
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger">@TempData["Error"]</div>
+}
+
+@* نموذج البحث عن المنتج *@
+<form method="get" asp-action="Withdraw" class="mb-3">
+    <input type="text" name="productSearch" value="@Model.ProductSearch" class="form-control" placeholder="ابحث باسم المنتج" />
+    <button type="submit" class="btn btn-primary mt-2">بحث</button>
+</form>
+
+@* عرض نتائج البحث *@
+@if (Model.Products != null && Model.Products.Any())
+{
+    <ul class="list-group mb-3">
+        @foreach (var p in Model.Products)
+        {
+            <li class="list-group-item">
+                <a href="@Url.Action("Withdraw", new { productSearch = Model.ProductSearch, productId = p.ProductId })">
+                    @p.ProductName (@p.TotalQuantity)
+                </a>
+            </li>
+        }
+    </ul>
+}
+
+@* إضافة المنتج المحدد للفاتورة *@
+@if (Model.ProductId.HasValue && Model.Batches != null && Model.Batches.Any())
+{
+    <h4>إضافة المنتج للفاتورة</h4>
+    <form method="post" asp-action="AddToSession" class="mb-3">
+        <input type="hidden" name="ProductId" value="@Model.ProductId" />
+        <input type="hidden" name="ProductName" value="@Model.Products.First(p => p.ProductId == Model.ProductId).ProductName" />
+
+        <label>اختر الباتش</label>
+        <select name="StockBatchId" class="form-select mb-2">
+            @foreach (var b in Model.Batches)
+            {
+                <option value="@b.StockBatchId">@b.BatchNumber | Qty: @b.Quantity</option>
+            }
+        </select>
+
+        <label>الكمية</label>
+        <input type="number" name="Quantity" step="0.01" class="form-control mb-2" required />
+
+        <label>سعر الوحدة</label>
+        <input type="number" name="UnitPrice" step="0.01" class="form-control mb-2" />
+
+        <label>خصم الوحدة</label>
+        <input type="number" name="UnitDiscount" step="0.01" class="form-control mb-2" />
+
+        <button type="submit" class="btn btn-success">أضف للفاتورة</button>
+    </form>
+}
+
+@* جدول المنتجات المضافة للفاتورة *@
+@if (Model.SelectedProducts != null && Model.SelectedProducts.Any())
+{
+    <h4>المنتجات المختارة للفاتورة</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>المنتج</th>
+                <th>باتش</th>
+                <th>كمية</th>
+                <th>سعر</th>
+                <th>خصم</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.SelectedProducts)
+            {
+                <tr>
+                    <td>@item.ProductName</td>
+                    <td>@item.BatchNumber</td>
+                    <td>@item.Quantity</td>
+                    <td>@item.UnitPrice</td>
+                    <td>@item.UnitDiscount</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @* اختيار العميل والفاتورة *@
+    <form method="post" asp-action="WithdrawFinal">
+        <label>اختر العميل</label>
+        <select name="customerName" class="form-select mb-2">
+            <option value="">-- عينات / بدون عميل --</option>
+            @foreach (var c in ViewBag.Customers)
+            {
+                <option value="@c">@c</option>
+            }
+        </select>
+
+        <label>اختر الفاتورة (اختياري)</label>
+        <select name="invoiceId" class="form-select mb-2">
+            <option value="">-- فاتورة جديدة --</option>
+            @foreach (var inv in Model.OpenInvoices)
+            {
+                <option value="@inv.InvoiceId">@inv.InvoiceName</option>
+            }
+        </select>
+
+        <div class="mt-3">
+            <button type="submit" class="btn btn-danger">سحب كل المنتجات</button>
+            <a asp-action="Withdraw" class="btn btn-secondary ms-2">إضافة منتج آخر</a>
+        </div>
+    </form>
+}

@@ -1,0 +1,102 @@
+﻿@model Inventory.ViewModel.Products.ProductViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+@await Html.PartialAsync("_Alerts")
+
+<h1>Edit</h1>
+
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post" enctype="multipart/form-data">
+            
+            <input type="hidden" asp-for="ProductId" />
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <div class="form-group">
+                    <label>Current Image</label><br />
+                    @if (!string.IsNullOrEmpty(Model.ProductImageUrl))
+                    {
+                        <img src="~/Files/Images/@Model.ProductImageUrl"
+                             style="width:150px; height:auto; border:1px solid #ccc; padding:2px;"
+                             alt="Product Image" />
+                    }
+                    else
+                    {
+                        <span>No image</span>
+                    }
+
+                    <div class="form-group">
+                        <label asp-for="ProductImageFile">Change Image</label>
+                        <input type="file" asp-for="ProductImageFile" class="form-control" />
+                    </div>
+                </div>
+
+                <label asp-for="ProductName" class="control-label"></label>
+                <input asp-for="ProductName" class="form-control" />
+                <span asp-validation-for="ProductName" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductCode" class="control-label"></label>
+                <input asp-for="ProductCode" class="form-control" />
+                <span asp-validation-for="ProductCode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Barcode" class="control-label"></label>
+                <input asp-for="Barcode" class="form-control" />
+                <span asp-validation-for="Barcode" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductDescription" class="control-label"></label>
+                <input asp-for="ProductDescription" class="form-control" />
+                <span asp-validation-for="ProductDescription" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="BuyingPrice" class="control-label"></label>
+                <input asp-for="BuyingPrice" class="form-control" />
+                <span asp-validation-for="BuyingPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="SellingPrice" class="control-label"></label>
+                <input asp-for="SellingPrice" class="form-control" />
+                <span asp-validation-for="SellingPrice" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MeasurementUnit"></label>
+                <select asp-for="MeasurementUnit" class="form-control searchable-select"
+                        asp-items="@(new SelectList(ViewBag.MeasureUnit ?? new List<string>()))">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Brand"></label>
+                <select asp-for="Brand" class="form-control searchable-select"
+                        asp-items="@(new SelectList(ViewBag.Brand ?? new List<string>()))">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Currency"></label>
+                <select asp-for="Currency" class="form-control searchable-select"
+                        asp-items="@(new SelectList(ViewBag.Currency ?? new List<string>()))">
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProductType"></label>
+                <select asp-for="ProductType" class="form-control searchable-select"
+                        asp-items="@(new SelectList(ViewBag.ProductType ?? new List<string>()))">
+                </select>
+            </div>
+
+
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    <a asp-action="Index">Back to List</a>
+</div>
+

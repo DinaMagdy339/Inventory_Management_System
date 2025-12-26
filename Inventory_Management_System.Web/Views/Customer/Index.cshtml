@@ -1,0 +1,120 @@
+﻿@using Inventory.Helper.Paging
+@using Inventory.ViewModel.Customers
+@model PaginatedList<CustomerViewModel>
+
+@{
+    ViewData["Title"] = "Customers";
+}
+@await Html.PartialAsync("_Alerts")
+
+<div class="row mb-3">
+    <div class="col-6">
+        <h2>Add New Customer</h2>
+        <a asp-action="Create" class="btn btn-primary">Add</a>
+    </div>
+
+    <div class="col-6 text-right">
+        <form asp-action="Index" method="get" class="form-inline justify-content-end">
+            <input type="text" name="searchTerm" value="@ViewBag.SearchTerm"
+                   class="form-control" placeholder="Search by Name..." />
+            <button type="submit" class="btn btn-primary ml-2">Search</button>
+        </form>
+    </div>
+</div>
+
+@if (!Model.Any())
+{
+    <div class="alert alert-info">
+        @(string.IsNullOrEmpty(ViewBag.SearchTerm)
+            ? "No Customer available."
+            : $"No Customer found matching \"{ViewBag.SearchTerm}\".")
+    </div>
+}
+else
+{
+    <div class="row">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Customer Type</th>
+                    <th>ContactPerson</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@item.CustomerName</td>
+                        <td>@item.CustomerTypeName</td>
+                        <td>@item.ContactPerson</td>
+                        <td>
+                            <a asp-action="Edit" asp-route-id="@item.CustomerId" class="btn btn-primary btn-sm">Edit</a>
+                            <a asp-action="Details" asp-route-id="@item.CustomerId" class="btn btn-primary btn-sm">Details</a>
+
+                        <td>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#deleteModal-@item.CustomerId">
+                                <i class="fas fa-trash"></i> Delete
+                            </button>
+                            <!-- Delete Modal -->
+                            <div class="modal fade" id="deleteModal-@item.CustomerId" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="exampleModalLabel">Delete</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+                                        <div class="modal-body">
+                                            Are You Sure to Delete The Customer With Name @item.CustomerName ?
+                                        </div>
+                                        <div class="modal-footer">
+                                            <form method="post" asp-action="Delete" asp-controller="Customer" asp-route-id="@item.CustomerId" class="mt-4">
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                                <input type="submit" value="Delete" class="btn btn-danger" />
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <nav aria-label="Page navigation">
+            <ul class="pagination justify-content-center">
+
+                @if (Model.HasPreviousPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-pageNumber="@(Model.PageIndex - 1)"
+                           asp-route-searchTerm="@ViewBag.SearchTerm">Previous</a>
+                    </li>
+                }
+
+                @for (int i = 1; i <= Model.TotalPages; i++)
+                {
+                    <li class="page-item @(i == Model.PageIndex ? "active" : "")">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-pageNumber="@i"
+                           asp-route-searchTerm="@ViewBag.SearchTerm">@i</a>
+                    </li>
+                }
+
+                @if (Model.HasNextPage)
+                {
+                    <li class="page-item">
+                        <a class="page-link" asp-action="Index"
+                           asp-route-pageNumber="@(Model.PageIndex + 1)"
+                           asp-route-searchTerm="@ViewBag.SearchTerm">Next</a>
+                    </li>
+                }
+
+            </ul>
+        </nav>
+    </div>
+}

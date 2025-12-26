@@ -1,0 +1,168 @@
+﻿@model Inventory.ViewModel.Bills.BillIndexViewModel
+
+@{
+    ViewData["Title"] = "Filter Bills";
+}
+
+@await Html.PartialAsync("_Alerts")
+
+<h2>Filter Bills</h2>
+
+<form method="get" asp-action="GetAllFiltered">
+    <div class="row mb-3">
+        <!-- Vendor -->
+        <div class="col-md-3">
+            <label>Vendor</label>
+            <input type="text" name="VendorName" class="form-control"
+                   value="@Model.Filter.VendorName"
+                   list="vendorsList" placeholder="اكتب أو اختر..." />
+            <datalist id="vendorsList">
+                @foreach (var v in ViewBag.Vendors as List<string>)
+                {
+                    <option value="@v"></option>
+                }
+            </datalist>
+        </div>
+
+        <!-- Bill Type -->
+        <div class="col-md-3">
+            <label>Bill Type</label>
+            <input type="text" name="BillTypeName" class="form-control"
+                   value="@Model.Filter.BillTypeName"
+                   list="billTypesList" placeholder="اكتب أو اختر..." />
+            <datalist id="billTypesList">
+                @foreach (var bt in ViewBag.BillTypes as List<string>)
+                {
+                    <option value="@bt"></option>
+                }
+            </datalist>
+        </div>
+
+        <!-- Bill Name -->
+        <div class="col-md-3">
+            <label>Bill Name</label>
+            <input type="text" name="BillName" class="form-control"
+                   value="@Model.Filter.BillName" placeholder="اكتب اسم الفاتورة" />
+        </div>
+
+        <!-- GRN Number -->
+        <div class="col-md-3">
+            <label>GRN Number</label>
+            <input type="text" name="GoodsReceivedNote" class="form-control"
+                   value="@Model.Filter.GoodsReceivedNote"
+                   list="grnList" placeholder="اكتب أو اختر..." />
+            <datalist id="grnList">
+                @foreach (var g in ViewBag.ReceivedNotes as List<string>)
+                {
+                    <option value="@g"></option>
+                }
+            </datalist>
+        </div>
+    </div>
+
+    <div class="row mb-3">
+        <!-- Payment Status -->
+        <div class="col-md-3">
+            <label>Payment Status</label>
+            <select name="PaymentStatus" class="form-control">
+                <option value="">-- All --</option>
+                @foreach (var ps in ViewBag.PaymentStatuses as List<string>)
+                {
+                    if (ps == Model.Filter.PaymentStatus)
+                    {
+                        <option value="@ps" selected="selected">@ps</option>
+                    }
+                    else
+                    {
+                        <option value="@ps">@ps</option>
+                    }
+                }
+            </select>
+        </div>
+
+        <!-- Sort By Due Date -->
+        <div class="col-md-3">
+            <label>Sort By Due Date</label>
+            <select name="SortByDueDateAsc" class="form-control">
+                @if (Model.Filter.SortByDueDateAsc)
+                {
+                    <option value="true" selected="selected">Ascending</option>
+                    <option value="false">Descending</option>
+                }
+                else
+                {
+                    <option value="true">Ascending</option>
+                    <option value="false" selected="selected">Descending</option>
+                }
+            </select>
+        </div>
+
+        <div class="col-md-3 align-self-end">
+            <button type="submit" class="btn btn-primary">Filter</button>
+            <a asp-action="GetAllFiltered" class="btn btn-secondary">Reset</a>
+        </div>
+    </div>
+</form>
+
+<hr />
+
+<!-- Bills Table -->
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Bill Name</th>
+            <th>Vendor</th>
+            <th>Bill Type</th>
+            <th>GRN Number</th>
+            <th>Bill Date</th>
+            <th>Bill Due Date</th>
+            <th>Payment Status</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var bill in Model.Bills)
+        {
+            <tr>
+                <td>@bill.BillName</td>
+                <td>@bill.VendorName</td>
+                <td>@bill.BillTypeName</td>
+                <td>@bill.GRNNumber</td>
+                <td>@bill.BillDate.ToString("yyyy-MM-dd")</td>
+                <td>@bill.BillDueDate.ToString("yyyy-MM-dd")</td>
+                <td>@bill.PaymentStatus</td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@bill.BillId" class="btn btn-primary btn-sm">Edit</a>
+                    <a asp-action="Details" asp-route-id="@bill.BillId" class="btn btn-info btn-sm">Details</a>
+                    <form method="post" asp-action="Delete" asp-route-id="@bill.BillId" style="display:inline">
+                        <button type="submit" class="btn btn-danger btn-sm">Delete</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        @if (Model.Bills.HasPreviousPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-pageNumber="@(Model.Bills.PageIndex - 1)">Previous</a>
+            </li>
+        }
+        @for (int i = 1; i <= Model.Bills.TotalPages; i++)
+        {
+            <li class="page-item @(i == Model.Bills.PageIndex ? "active" : "")">
+                <a class="page-link" asp-route-pageNumber="@i">@i</a>
+            </li>
+        }
+        @if (Model.Bills.HasNextPage)
+        {
+            <li class="page-item">
+                <a class="page-link" asp-route-pageNumber="@(Model.Bills.PageIndex + 1)">Next</a>
+            </li>
+        }
+    </ul>
+</nav>

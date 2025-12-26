@@ -1,0 +1,91 @@
+﻿/* Reset some default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Roboto', sans-serif;
+}
+
+body {
+    height: 100vh;
+    background: #8cbf7f; /* اللون الأخضر الفاتح للخلفية */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+form {
+    background: rgba(76, 135, 79, 0.9); /* صندوق بلون أخضر مع شفافية */
+    padding: 40px 30px;
+    border-radius: 10px;
+    width: 350px;
+    box-shadow: 0px 4px 15px rgba(0,0,0,0.2);
+    text-align: center;
+}
+
+    form h2 {
+        color: #fff;
+        font-weight: 300;
+        margin-bottom: 25px;
+        font-size: 24px;
+    }
+
+input[type="text"],
+input[type="email"],
+input[type="password"] {
+    width: 100%;
+    padding: 12px 15px;
+    margin: 10px 0;
+    border: 1px solid #c1d1b0;
+    border-radius: 5px;
+    background: rgba(255, 255, 255, 0.2);
+    color: #fff;
+    font-size: 14px;
+}
+
+input::placeholder {
+    color: #e6e6e6;
+}
+
+input[type="checkbox"] {
+    margin-right: 10px;
+}
+
+label {
+    color: #fff;
+    font-size: 13px;
+}
+
+button {
+    width: 100%;
+    padding: 12px;
+    border: none;
+    border-radius: 5px;
+    background: #a1c16a;
+    color: #fff;
+    font-size: 16px;
+    letter-spacing: 2px;
+    margin-top: 15px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+    button:hover {
+        background: #8cbf7f;
+    }
+
+p {
+    color: #fff;
+    font-size: 13px;
+    margin-top: 15px;
+}
+
+    p a {
+        color: #fff;
+        font-weight: bold;
+        text-decoration: none;
+    }
+
+        p a:hover {
+            text-decoration: underline;
+        }
