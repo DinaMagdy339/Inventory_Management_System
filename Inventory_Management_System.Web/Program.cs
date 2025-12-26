@@ -96,7 +96,7 @@ namespace Inventory_Management_System.Web
 
             app.MapControllerRoute(
                name: "default",
-               pattern: "{controller=Account}/{action=Register}");
+               pattern: "{controller=Account}/{action=Login}");
 
          
             app.Run();

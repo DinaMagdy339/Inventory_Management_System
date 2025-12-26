@@ -24,46 +24,29 @@ namespace Inventory.Repository.ProductServices
             {
                 throw new Exception("This Product name already exists.");
             }
-            var MeasurementUnitId = _context.MeasureUnits
-              .Where(bt => bt.Name.ToLower() == model.MeasurementUnit.ToLower())
-              .Select(bt => bt.Id)
-              .FirstOrDefault();
+            var MeasurementUnitId = _context.MeasureUnits.Where(bt => bt.Name.ToLower() == model.MeasurementUnit.ToLower()).Select(bt => bt.Id).FirstOrDefault();
             if (MeasurementUnitId == 0) throw new Exception($"MeasurementUnit '{model.MeasurementUnit}' not found.");
-
-        
-            var CurrencyId = _context.currencies
-             .Where(bt => bt.Name.ToLower() == model.Currency.ToLower())
-             .Select(bt => bt.Id)
-             .FirstOrDefault();
+       
+            var CurrencyId = _context.currencies.Where(bt => bt.Name.ToLower() == model.Currency.ToLower()).Select(bt => bt.Id).FirstOrDefault();
             if (CurrencyId == 0) throw new Exception($"Currency '{model.Currency}' not found.");
 
-            var ProductTypeId = _context.ProductTypes
-            .Where(bt => bt.ProductTypeName.ToLower() == model.ProductType.ToLower())
-            .Select(bt => bt.ProductTypeId)
-            .FirstOrDefault();
+            var ProductTypeId = _context.ProductTypes.Where(bt => bt.ProductTypeName.ToLower() == model.ProductType.ToLower()).Select(bt => bt.ProductTypeId).FirstOrDefault();
             if (ProductTypeId == 0) throw new Exception($"ProductType '{model.ProductType}' not found.");
 
-            var BrandId = _context.Brands
-           .Where(bt => bt.Title.ToLower() == model.Brand.ToLower())
-           .Select(bt => bt.Id)
-           .FirstOrDefault();
+            var BrandId = _context.Brands.Where(bt => bt.Title.ToLower() == model.Brand.ToLower()).Select(bt => bt.Id).FirstOrDefault();
             if (BrandId == 0) throw new Exception($"Brand '{model.Brand}' not found.");
 
             string imageName = null;
 
             if (model.ProductImageFile != null)
             {
-                var uploadResult = _attachementServices
-                    .UploadAttachement(model.ProductImageFile, "Images");
-
+                var uploadResult = _attachementServices.UploadAttachement(model.ProductImageFile, "Images");
                 if (!uploadResult.IsSuccess)
                 {
                     throw new Exception(uploadResult.ErrorMessage);
                 }
-
                 imageName = uploadResult.FileName;
             }
-
 
             var product = new Product()
             {
@@ -74,11 +57,10 @@ namespace Inventory.Repository.ProductServices
                 ProductImageUrl = imageName,
                 BuyingPrice = model.BuyingPrice,
                 SellingPrice = model.SellingPrice,
-                MeasurementUnitId = MeasurementUnitId,
+                MeasurementUnitId = int.Parse(model.MeasurementUnit),
                 CurrencyId = CurrencyId,
                 ProductTypeId = ProductTypeId,
                 BrandId = BrandId,
-
             };
 
             _context.Products.Add(product);

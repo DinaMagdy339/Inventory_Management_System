@@ -1,5 +1,6 @@
 ﻿using Inventory.Helper.Paging;
 using Inventory.ViewModel.MeasureUnits;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,6 @@ namespace Inventory.Repository.MeasureUnitServices
         void Add(MeasureUnitVM model);
         void Update(MeasureUnitVM model);
         void Delete(int id);
-        Task<List<string>> GetForDropdownAsync();
+        Task<List<SelectListItem>> GetForDropdownAsync();
     }
 }

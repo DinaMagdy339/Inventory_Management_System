@@ -24,18 +24,10 @@ namespace Inventory.ViewModel.Products
 
         public decimal BuyingPrice { get; set; }
         public decimal SellingPrice { get; set; }
-
-        [Display(Name = "Measurement Unit")]
-        public int MeasurementUnitId { get; set; }
-        public string? MeasurementUnit { get; set; }
-        [Display(Name = "Currency")]
-        public int CurrencyId { get; set; }
+        public string MeasurementUnit { get; set; }
         public string Currency { get; set; }
-        public int ProductTypeId { get; set; }
         public string ProductType { get; set; }
-        public int BrandId { get; set; }
         public string Brand { get; set; }
-
         public double TotalQuantity { get; set; }
 
 

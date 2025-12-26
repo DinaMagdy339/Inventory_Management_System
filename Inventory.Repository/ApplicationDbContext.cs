@@ -218,7 +218,6 @@ namespace Inventory.Repository
                 .HasForeignKey(ii => ii.StockBatchId)
                 .OnDelete(DeleteBehavior.Restrict); 
         }
-
         public DbSet<Bank> Banks { get; set; }
         public DbSet<Bill> Bills { get; set; }
         public DbSet<BillType> BillTypes { get; set; }

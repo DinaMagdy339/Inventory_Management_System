@@ -1,5 +1,6 @@
 ﻿using Inventory.Helper.Paging;
 using Inventory.ViewModel.MeasureUnits;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -54,7 +55,6 @@ namespace Inventory.Repository.MeasureUnitServices
                 }
             }
         }
-
         public Task<PaginatedList<MeasureUnitVM>> GetAllAsync(int pageSize, int pageNumber, string? SearchTerm)
         {
             var query = _context.MeasureUnits.AsNoTracking()
@@ -70,7 +70,6 @@ namespace Inventory.Repository.MeasureUnitServices
             }
             return PaginatedList<MeasureUnitVM>.CreateAsync(query, pageNumber, pageSize);
         }
-
         public Task<MeasureUnitVM> GetByIdAsync(int id)
         {
             var measureUnit = _context.MeasureUnits.AsNoTracking()
@@ -84,7 +83,6 @@ namespace Inventory.Repository.MeasureUnitServices
                 .FirstOrDefaultAsync();
             return measureUnit;
         }
-
         public void Update(MeasureUnitVM model)
         {
             var measureUnit = _context.MeasureUnits.FirstOrDefault(m => m.Id == model.Id);
@@ -96,13 +94,13 @@ namespace Inventory.Repository.MeasureUnitServices
                 _context.SaveChanges();
             }
         }
-        public async Task<List<string>> GetForDropdownAsync()
+        public async Task<List<SelectListItem>> GetForDropdownAsync()
         {
-            return await _context.MeasureUnits
-                .AsNoTracking()
-                .OrderBy(m => m.Name)
-                .Select(m => m.Name)
-                .ToListAsync() ?? new List<string>();
+            return await _context.MeasureUnits.AsNoTracking().OrderBy(m => m.Name).Select(m => new SelectListItem
+            {
+                Value = m.Id.ToString(),
+                Text = m.Name
+            }).ToListAsync() ?? new List<SelectListItem>();
         }
 
     }
