@@ -83,7 +83,7 @@ namespace Inventory.Repository.StockServices
 
             return vm;
         }
-        public async Task<CreatedStockVM> GetStockByStockIdAsync(int stockId)
+        public async Task<UpdateStockDTO?> GetStockByStockIdAsync(int stockId)
         {
             var stock = await _context.Stocks
                 .Include(s => s.StockBatches)
@@ -94,26 +94,26 @@ namespace Inventory.Repository.StockServices
             if (stock == null)
                 return null;
 
-            var vm = new CreatedStockVM
+            var vm = new UpdateStockDTO
             {
                 StockId = stock.StockId,
                 ProductName = stock.Product.ProductName,
                 WarehouseName = stock.Warehouse.WarehouseName,
                 Quantity = stock.Quantity,
-                Batches = stock.StockBatches.Select(b => new StockBatchVM
+                Batches = stock.StockBatches.Select(b => new UpdateBatchDTO
                 {
                     StockBatchId = b.StockBatchId,
                     BatchNumber = b.BatchNumber,
                     Quantity = b.Quantity,
                     ExpiryDate = b.ExpiryDate
-                }).ToList() ?? new List<StockBatchVM>()
+                }).ToList() ?? new List<UpdateBatchDTO>()
             };
 
             return vm;
         }
 
-        public void AddStock(CreatedStockVM stock)
-        {
+        public void AddStock(CreateStockDTO stock)
+        { 
             
             var warehouseId = _context.Warehouses
                 .Where(w => w.WarehouseName == stock.WarehouseName)
@@ -134,25 +134,34 @@ namespace Inventory.Repository.StockServices
                 UpdatedAt = DateTime.Now,
                 IsActive = true
             };
-
+            
             _context.Stocks.Add(newStock);
-            _context.SaveChanges(); 
+            _context.SaveChanges();
 
-            if (stock.Batches != null && stock.Batches.Any())
+            if (stock.Batches.Count != 0 && stock.Batches != null)
             {
                 foreach (var batch in stock.Batches)
                 {
                     var newBatch = new StockBatch
                     {
-                        StockId = newStock.StockId, 
+                        StockId = newStock.StockId,
                         BatchNumber = batch.BatchNumber,
                         Quantity = batch.Quantity,
-                        ExpiryDate = batch.ExpiryDate
+                        ExpiryDate = batch.ExpiryDate,
+                        CreatedAt = DateTime.Now,
+                        UpdatedAt = DateTime.Now,
+                        IsActive = true
+
+
                     };
                     _context.StockBatchs.Add(newBatch);
                 }
                 _context.SaveChanges();
             }
+
+
+
+
         }
         public void Delete(int id)
         {
@@ -178,7 +187,7 @@ namespace Inventory.Repository.StockServices
 
             }
         }
-        public void Update(CreatedStockVM stock)
+        public void Update(UpdateStockDTO stock)
         {
             var existingStock = _context.Stocks
                 .Include(s => s.StockBatches)
@@ -200,20 +209,16 @@ namespace Inventory.Repository.StockServices
                 if (batch.StockBatchId.HasValue)
                 {
                     var existingBatch = existingStock.StockBatches
-                        .FirstOrDefault(b => b.StockBatchId == batch.StockBatchId.Value);
+                        .FirstOrDefault(b => b.StockBatchId == batch.StockBatchId);
 
                     if (existingBatch != null)
                     {
-                        if (batch.IsDeleted)
-                        {
-                            _context.StockBatchs.Remove(existingBatch);
-                        }
-                        else
-                        {
+                       
                             existingBatch.BatchNumber = batch.BatchNumber;
                             existingBatch.Quantity = batch.Quantity;
                             existingBatch.ExpiryDate = batch.ExpiryDate;
-                        }
+
+                        
                     }
                 }
                 else
@@ -227,6 +232,7 @@ namespace Inventory.Repository.StockServices
                     };
                     _context.StockBatchs.Add(newBatch);
                 }
+                _context.SaveChanges();
             }
 
             _context.SaveChanges();

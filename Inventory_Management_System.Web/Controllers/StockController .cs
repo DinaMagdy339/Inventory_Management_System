@@ -129,13 +129,13 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpPost]
-        public IActionResult Create(CreatedStockVM model)
+        public IActionResult Create(CreateStockDTO model)
         {
-            if (!ModelState.IsValid)
+            if(!ModelState.IsValid)
             {
                 return View(model);
             }
-
+            
             try
             {
                 _stockRepo.AddStock(model);
@@ -169,9 +169,7 @@ namespace Inventory.Web.Controllers
                 var stock = await _stockRepo.GetStockByStockIdAsync(id);
                 if (stock == null)
                     return NotFound();
-                stock.Batches ??= new List<StockBatchVM>();
-
-
+                stock.Batches ??= new List<UpdateBatchDTO>() { };
                 ViewBag.warehouse = await _warehouseRepo.GetForDropdownAsync();
 
                 ViewBag.product = await _productRepo.GetForDropdownAsync();
@@ -190,7 +188,7 @@ namespace Inventory.Web.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(CreatedStockVM model)
+        public async Task<IActionResult> Edit(UpdateStockDTO model)
         {
             if (!ModelState.IsValid)
                 return View(model);

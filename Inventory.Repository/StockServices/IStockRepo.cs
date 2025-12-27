@@ -16,10 +16,10 @@ namespace Inventory.Repository.StockServices
     {
         Task<PaginatedList<AllStockVM>> GetAllStocksAsync(int pageNum, int pageSize, string? searchTerm);
         Task<StockDetailVM> GetStockByIdAsync(int id);
-        void AddStock(CreatedStockVM stock);
-        void Update(CreatedStockVM stock);
+        void AddStock(CreateStockDTO stock);
+        void Update(UpdateStockDTO stock);
         void Delete(int id);
-        Task<CreatedStockVM> GetStockByStockIdAsync(int stockId);
+        Task<UpdateStockDTO> GetStockByStockIdAsync(int stockId);
 
         Task<List<ProductViewModel>> GetProductsAsync(string search);
         Task<List<StockBatchVM>> GetBatchesAsync(int productId);

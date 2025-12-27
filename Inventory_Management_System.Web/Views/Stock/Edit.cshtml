@@ -1,4 +1,4 @@
-﻿@model Inventory.ViewModel.Stocks.CreatedStockVM
+﻿@model Inventory.ViewModel.Stocks.UpdateStockDTO
 
 @{
     ViewData["Title"] = "تعديل المخزون";
@@ -75,10 +75,7 @@
                                class="form-control" />
                     </td>
 
-                    <td class="text-center">
-                        <input asp-for="Batches[i].IsDeleted" type="checkbox" />
-                        <label>حذف</label>
-                    </td>
+                   
                 </tr>
                 }
             }

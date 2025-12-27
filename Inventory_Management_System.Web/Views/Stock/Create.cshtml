@@ -1,4 +1,4 @@
-﻿@model Inventory.ViewModel.Stocks.CreatedStockVM
+﻿@model Inventory.ViewModel.Stocks.CreateStockDTO
 
 @{
     ViewData["Title"] = "إضافة مخزون جديد";
@@ -8,24 +8,22 @@
 <hr />
 
 <form asp-action="Create" method="post">
+
     <!-- المنتج -->
     <div class="form-group">
         <label>المنتج</label>
         <select asp-for="ProductName" class="form-control searchable-select"
-                asp-items="@(new SelectList(ViewBag.product?? new List<string>()))">
+                asp-items="@(new SelectList(ViewBag.product ?? new List<string>()))">
             <option value="">اختر المنتج</option>
-
         </select>
     </div>
-
 
     <!-- المخزن -->
     <div class="form-group">
         <label>المخزن</label>
         <select asp-for="WarehouseName" class="form-control searchable-select"
-                asp-items="@(new SelectList(ViewBag.warehouse?? new List<string>()))">
+                asp-items="@(new SelectList(ViewBag.warehouse ?? new List<string>()))">
             <option value="">اختر المخزن</option>
-
         </select>
     </div>
 
@@ -38,7 +36,9 @@
 
     <hr />
     <h4>الباتشات</h4>
-    <button type="button" id="addBatchBtn" class="btn btn-info mb-2">➕ إضافة باتش جديد</button>
+    <button type="button" id="addBatchBtn" class="btn btn-info mb-2">
+        ➕ إضافة باتش جديد
+    </button>
 
     <table class="table table-bordered" id="batchesTable">
         <thead>
@@ -58,26 +58,46 @@
 </form>
 
 @section Scripts {
-    <script>
-        let batchIndex = 0;
+        <script>
+            let batchIndex = 0;
 
-        document.getElementById("addBatchBtn").addEventListener("click", function() {
-            const table = document.getElementById("batchesTable").getElementsByTagName('tbody')[0];
-            const row = document.createElement("tr");
+            document.getElementById("addBatchBtn").addEventListener("click", function () {
 
-            row.innerHTML = `
-              <input name="Batches[${batchIndex}].BatchNumber" class="form-control" required />
-              <input name="Batches[${batchIndex}].Quantity" class="form-control" required />
-              <input name="Batches[${batchIndex}].ExpiryDate" type="date" class="form-control" required />
-              <td class="text-center"><button type="button" class="btn btn-danger removeBatchBtn">حذف</button></td>
-            `;
+                const tableBody = document
+                    .getElementById("batchesTable")
+                    .getElementsByTagName("tbody")[0];
 
-            table.appendChild(row);
-            batchIndex++;
+                const row = document.createElement("tr");
 
-            row.querySelector(".removeBatchBtn").addEventListener("click", function() {
-                row.remove();
+                row.innerHTML = `
+                    <td>
+                        <input name="Batches[${batchIndex}].BatchNumber"
+                               class="form-control" required />
+                    </td>
+                    <td>
+                        <input name="Batches[${batchIndex}].Quantity"
+                               type="number" step="0.01"
+                               class="form-control" required />
+                    </td>
+                    <td>
+                        <input name="Batches[${batchIndex}].ExpiryDate"
+                               type="date"
+                               class="form-control" required />
+                    </td>
+                    <td class="text-center">
+                        <button type="button"
+                                class="btn btn-danger removeBatchBtn">
+                            حذف
+                        </button>
+                    </td>
+                `;
+
+                tableBody.appendChild(row);
+                batchIndex++;
+
+                row.querySelector(".removeBatchBtn").addEventListener("click", function () {
+                    row.remove();
+                });
             });
-        });
-    </script>
+        </script>
 }

@@ -13,18 +13,19 @@ namespace Inventory.Models
 
         [Display(Name = "Stock")]
         public int StockId { get; set; }
-        public Stock Stock { get; set; }
-
         [Required]
         public string BatchNumber { get; set; }
 
         [Display(Name = "Expiry Date")]
         public DateTime ExpiryDate { get; set; }
-        public DateTime CreatedAt { get; set; }
-        public DateTime UpdatedAt { get; set; }
+        public DateTime? CreatedAt { get; set; }
+        public DateTime? UpdatedAt { get; set; }
         public bool IsActive { get; set; } = true;
 
         public double Quantity { get; set; }
+       
+        // Navigation Properties
+        public Stock Stock { get; set; }
 
         public ICollection<InventoryTransaction> InventoryTransactions { get; set; } = new HashSet<InventoryTransaction>();
 

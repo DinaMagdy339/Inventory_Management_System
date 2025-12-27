@@ -11,9 +11,9 @@ namespace Inventory.ViewModel.Stocks
     {
         public int StockId { get; set; }
         public int ProductId { get; set; }
-        public string ProductName { get; set; }
+        public string? ProductName { get; set; }
         public int WarehouseId { get; set; }
-        public string WarehouseName { get; set; }
+        public string? WarehouseName { get; set; }
         public double Quantity { get; set; }
 
 
